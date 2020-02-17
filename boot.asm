@@ -1,26 +1,19 @@
+[org 0x7c00]
+
 mov ah, 0x0e ; set tty mode
 
 ; Compute offset of letters
 mov bx, message
-add bx, 0x7c00
+call print
 
-; Compute end of offset
-mov cx, bx
-add cx, 0x11
-
-print_letter:
-	mov al, [bx]
-	int 0x10
-	add bx, 0x1
-	cmp bx, cx
-	jl print_letter
-
-message:
-	db 'Hello Boot Sector'
-
-; And now we infinite loop
+; And now we loop
 loop:
 	jmp loop
+
+%include "print.asm"
+
+message:
+	db 'Hello Boot Sector', 0
 
 ; Fill binary until the end of the boot sector
 times 510-($-$$) db 0
